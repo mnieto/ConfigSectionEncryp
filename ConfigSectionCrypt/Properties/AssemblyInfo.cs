@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("ConfigSectionCrypt")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(".NET Config Section encription")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ConfigSectionCrypt")]
