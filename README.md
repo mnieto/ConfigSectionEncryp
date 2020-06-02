@@ -3,9 +3,18 @@ Encryp or Decrypt a section in any web.config or app.config file
 
 
 ```
-USAGE:  ConfigSectionCrypt (-e | -d) section filename
-           `-e/-encrypt    Encrypt the specified section in the given file
-           `-d/-decrypt    Decrypt the specified section in the given file
+.NET Config Section encription 2.0.0.0
+
+
+  -e, --encrypt           Required. Encrypt the enumerated sections
+  -d, --dncrypt           Required. Decrypt the enumerated sections
+  -s, --sections          Required. Section names to encrypt / decrypt
+  -i, --include           Include reference to neccessary assemblies to read
+                          config file
+  --help                  Display this help screen.
+  --version               Display version information.
+  config_file (pos. 0)    Required. app.config or web.config to encrypt or
+                          decrypt
 ```
 
 
