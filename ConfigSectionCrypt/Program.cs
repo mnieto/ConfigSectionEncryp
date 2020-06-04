@@ -10,13 +10,13 @@ using CommandLine.Text;
 
 namespace ConfigSectionCrypt {
     class Program {
-        static void Main(string[] args) {
+        static int Main(string[] args) {
 
             var parser = new Parser(settings => settings.HelpWriter = null);
 
             var parsed = parser.ParseArguments<Options>(args);
-            parsed.MapResult(opt => RunAndReturnExitCode(opt), 
-                             err => DisplayHelp(parsed, err));
+            return parsed.MapResult(opt => RunAndReturnExitCode(opt), 
+                                    err => DisplayHelp(parsed, err));
 
         }
 
