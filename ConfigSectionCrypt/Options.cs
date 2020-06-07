@@ -6,7 +6,7 @@ public class Options {
     [Option('e', "encrypt", SetName = "encrypt", HelpText = "Encrypt the enumerated sections", Required = true)]
     public bool Encrypt { get => Operation == 'e'; set => Operation = value ? 'e' : 'd'; }
 
-    [Option('d', "dncrypt", SetName = "decrypt", HelpText = "Decrypt the enumerated sections", Required = true)]
+    [Option('d', "decrypt", SetName = "decrypt", HelpText = "Decrypt the enumerated sections", Required = true)]
     public bool Decrypt { get => Operation == 'd'; set => Operation = value ? 'd' : 'e'; }
 
     [Value(0, MetaName = "config_file", HelpText = "app.config or web.config to encrypt or decrypt", Required = true)]
