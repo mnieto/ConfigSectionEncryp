@@ -17,5 +17,8 @@ public class Options {
     [Option('i', "include", HelpText = "Include reference to neccessary assemblies to read config file", Required = false, Separator = ',')]
     public IEnumerable<string> Include { get; set; }
 
+    [Option('l', "loglevel", HelpText = "Logging level: Quiet, Normal, Verbose", Default = Verbosity.Normal)]
+    public Verbosity LogLevel { get; set; }
+
     internal char Operation { get; set; }
 }

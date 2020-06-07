@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Configuration;
+using Serilog;
 
 namespace ConfigSectionCrypt {
     public static class Crypt {
@@ -21,24 +22,25 @@ namespace ConfigSectionCrypt {
                 Configuration config = OpenConfiguration(options.ConfigFile);
 
                 foreach (string sectionName in options.Section) {
-                    Console.WriteLine("Encrypting section '{0}' in '{1}'", sectionName, fileName);
+                    Log.Debug("Encrypting section '{sectionName}' in '{sectionName}'", sectionName, fileName);
                     ConfigurationSection configSection = config.GetSection(sectionName);
                     if (configSection != null) {
                         if (configSection.SectionInformation.IsProtected) {
-                            Console.WriteLine("'{0}' section is already encrypted", sectionName);
+                            Log.Warning("'{sectionName}' section is already encrypted", sectionName);
                         } else {
                             configSection.SectionInformation.ProtectSection("DataProtectionConfigurationProvider");
                         }
-                        Console.WriteLine("Successfully encrypted section '{0}' in '{1}'", sectionName, fileName);
+                        Log.Information("Successfully encrypted section '{sectionName}' in '{fileName}'", sectionName, fileName);
                     } else {
-                        Console.WriteLine("ERROR: cannot load the configuration section '{0}' from file '{1}'", fileName, sectionName);
+                        Log.Error("ERROR: cannot load the configuration section '{fileName}' from file '{sectionName}'. Remember that section names are case sensitive.", fileName, sectionName);
                         return ExitCodes.SectionNotFound;
                     }
                 }
                 config.Save();
                 return ExitCodes.NoError;
             } catch (Exception ex) {
-                Console.WriteLine("ERROR: {0}: {1}", ex.GetType().FullName, ex.Message);
+                string errorType = ex.GetType().FullName;
+                Log.Error(ex, "ERROR: {errorType}", errorType);
                 return ExitCodes.UnexpectedError;
             }
         }
@@ -50,24 +52,25 @@ namespace ConfigSectionCrypt {
             try {
                 Configuration config = OpenConfiguration(options.ConfigFile);
                 foreach (string sectionName in options.Section) {
-                    Console.WriteLine("Decrypting section '{0}' in '{1}'", sectionName, fileName);
+                    Log.Debug("Decrypting section '{sectionName}' in '{fileName}'", sectionName, fileName);
                     ConfigurationSection configSection = config.GetSection(sectionName);
                     if (configSection != null) {
                         if (configSection.SectionInformation.IsProtected) {
                             configSection.SectionInformation.UnprotectSection();
                         } else {
-                            Console.WriteLine("'{0}' section is already unprotected", sectionName);
+                            Log.Warning("'{sectionName}' section is already unprotected", sectionName);
                         }
-                        Console.WriteLine("Successfully decrypted section '{0}' in '{1}'", sectionName, fileName);
+                        Log.Information("Successfully decrypted section '{sectionName}' in '{fileName}'", sectionName, fileName);
                     } else {
-                        Console.WriteLine("ERROR: cannot load the configuration section '{0}' from file '{1}' - section not found or invalid", fileName, sectionName);
+                        Log.Error("ERROR: cannot load the configuration section '{fileName}' from file '{sectionName}'. Remember that section names are case sensitive.", fileName, sectionName);
                         return ExitCodes.SectionNotFound;
                     }
                 }
                 config.Save();
                 return ExitCodes.NoError;
             } catch (Exception ex) {
-                Console.WriteLine("ERROR: {0}: {1}", ex.GetType().FullName, ex.Message);
+                string errorType = ex.GetType().FullName;
+                Log.Error(ex, "ERROR: {errorType}", errorType);
                 return ExitCodes.UnexpectedError;
             }
         }
@@ -80,13 +83,13 @@ namespace ConfigSectionCrypt {
         }
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            Console.WriteLine($"Resolving assembly {args.Name}");
+            Log.Information($"Resolving assembly {args.Name}");
             foreach (string include in Includes) {
                 string assemblyName = Path.GetFileNameWithoutExtension(include);
                 string assemblyPath = Path.GetFullPath(include);            //Assembly.LoadFile requires absolute path
 
                 if (string.Equals(args.Name, assemblyName, StringComparison.OrdinalIgnoreCase)) {
-                    Console.WriteLine($"Resolved: Loading '{assemblyPath}'.");
+                    Log.Debug($"Resolved: Loading '{assemblyPath}'.");
                     return Assembly.LoadFile(assemblyPath);
                 }
             }

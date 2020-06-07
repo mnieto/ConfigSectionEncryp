@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Web.Configuration;
 using CommandLine;
 using CommandLine.Text;
+using Serilog;
+using Serilog.Sinks.SystemConsole;
 
 namespace ConfigSectionCrypt {
     class Program {
@@ -20,13 +22,27 @@ namespace ConfigSectionCrypt {
 
         }
 
+        private static void SetupLogger(Verbosity verbosity) {
+            var logLevel = (Serilog.Events.LogEventLevel)(int)verbosity;
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console(logLevel, theme: Serilog.Sinks.SystemConsole.Themes.SystemConsoleTheme.Literate)
+                .CreateLogger();
+        }
 
         private static int RunAndReturnExitCode(Options options) {
-            string command = options.Operation == 'e' ? "Encrypt" : "Decript";
-            Console.WriteLine($"{command} {options.ConfigFile} file");
-            Console.WriteLine($"  sections: {string.Join(",", options.Section)}");
-            Console.WriteLine($"  includes: {string.Join(",", options.Include)}");
-            Console.WriteLine();
+
+            SetupLogger(options.LogLevel);
+
+            if (Log.IsEnabled(Serilog.Events.LogEventLevel.Debug)) {
+                StringBuilder sb = new StringBuilder();
+                string command = options.Operation == 'e' ? "Encrypt" : "Decript";
+                sb.AppendLine($"{command} {options.ConfigFile} file");
+                sb.AppendLine($"  sections: {string.Join(",", options.Section)}");
+                sb.AppendLine($"  includes: {string.Join(",", options.Include)}");
+                sb.AppendLine();
+                Log.Debug(sb.ToString());
+            }
 
             if (options.Encrypt) {
                 return Crypt.EncryptSections(options);
