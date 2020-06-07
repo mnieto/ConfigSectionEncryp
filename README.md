@@ -7,12 +7,12 @@ Encryp or Decrypt a section in any web.config or app.config file
 
 USAGE:
 Encrypt multiple sections:
-  ConfigSectionCrypt --encrypt --include c:\Path\To\Custom\DLL\SharedFolders.dll --sections configurationStrings,SharedFolders MyApp.exe.config
+  ConfigSectionCrypt --encrypt --include c:\Path\To\SharedFolders.dll --sections configurationStrings,SharedFolders MyApp.exe.config
 Decript connectionStrings section:
-  ConfigSectionCrypt --dncrypt --sections configurationStrings MyApp.exe.config
+  ConfigSectionCrypt --decrypt --sections configurationStrings MyApp.exe.config
 
   -e, --encrypt           Required. Encrypt the enumerated sections
-  -d, --dncrypt           Required. Decrypt the enumerated sections
+  -d, --decrypt           Required. Decrypt the enumerated sections
   -s, --sections          Required. Section names to encrypt / decrypt
   -i, --include           Include reference to neccessary assemblies to read
                           config file
