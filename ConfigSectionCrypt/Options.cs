@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CommandLine;
+using CommandLine.Text;
 
 public class Options {
     [Option('e', "encrypt", SetName = "encrypt", HelpText = "Encrypt the enumerated sections", Required = true)]
@@ -19,6 +20,23 @@ public class Options {
 
     [Option('l', "loglevel", HelpText = "Logging level: Quiet, Normal, Verbose", Default = Verbosity.Normal)]
     public Verbosity LogLevel { get; set; }
+
+    [Usage()]
+    public static IEnumerable<Example> Usage {
+        get {
+            yield return new Example("Encrypt multiple sections", new Options {
+                Encrypt = true,
+                ConfigFile = "MyApp.exe.config",
+                Section = "configurationStrings,SharedFolders".Split(','),
+                Include = @"c:\Path\To\Custom\DLL\SharedFolders.dll".Split(',')
+            });
+            yield return new Example("Decript connectionStrings section", new Options {
+                Decrypt = true,
+                ConfigFile = "MyApp.exe.config",
+                Section = "configurationStrings".Split(',')
+            });
+        }
+    }
 
     internal char Operation { get; set; }
 }
